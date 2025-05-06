@@ -24,19 +24,19 @@ final class AppKernel extends Kernel
         $loader->load(__DIR__ . '/../config/services.yml');
     }
 
-    protected function build(ContainerBuilder $containerBuilder): void
+    protected function build(ContainerBuilder $container): void
     {
-        $containerBuilder->addCompilerPass($this->createCollectingCompilerPass());
+        $container->addCompilerPass($this->createCollectingCompilerPass());
     }
 
     private function createCollectingCompilerPass(): CompilerPassInterface
     {
         return new class implements CompilerPassInterface {
-            public function process(ContainerBuilder $containerBuilder)
+            public function process(ContainerBuilder $container)
             {
-                $applicationDefinition = $containerBuilder->findDefinition(Application::class);
+                $applicationDefinition = $container->findDefinition(Application::class);
 
-                foreach ($containerBuilder->getDefinitions() as $definition) {
+                foreach ($container->getDefinitions() as $definition) {
                     if (!is_a($definition->getClass(), Command::class, true)) {
                         continue;
                     }

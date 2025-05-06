@@ -11,5 +11,9 @@
             "App\\": "src"
         },
         "files": ["src/AppKernel.php"]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "phpstan/phpstan": "^2.1"
     }
 }
