@@ -25,6 +25,7 @@ class VerifyPassword
             $array = $this->doExecute($this->request);
             $response->strength = $array[0];
             $response->isOk = $array[1];
+            $response->isLeaked = $array[2];
         }catch (Exception $e){
             $response->exception =$e;
         }
@@ -38,6 +39,6 @@ class VerifyPassword
         $strength=  $this->passwordService::estimateStrength($password);
         $isVulnerable= $this->passwordService->checkVulnerablePasswords($password);
         $vulnerability = ($isVulnerable || $strength < $request->expectedStrength);
-        return [$strength, !$vulnerability];
+        return [$strength, !$vulnerability, $isVulnerable];
     }
 }

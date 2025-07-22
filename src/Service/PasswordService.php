@@ -52,14 +52,30 @@ class PasswordService
         };
     }
 
+    public static function getStrengthName(?int $strength)
+    {
+        return match ($strength) {
+            self::STRENGTH_VERY_WEAK => "Very Weak",
+            self::STRENGTH_WEAK => "Weak",
+            self::STRENGTH_MEDIUM => "Medium",
+            self::STRENGTH_STRONG => "Strong",
+            self::STRENGTH_VERY_STRONG => "Very Strong",
+            default => "Unknown Strength"
+        };
+    }
+
     public function checkVulnerablePasswords(string $password): bool
     {
         $client = HttpClient::create();
         $url = "https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Passwords/Common-Credentials/xato-net-10-million-passwords.txt";
         $isVulnerable = $this->checkIfPasswordIsVulnerableAsStream($client, $password, $url);
         if (!$isVulnerable) {
-            $url = "https://www.ncsc.gov.uk/static-assets/documents/PwnedPasswordsTop100k.json";
-            $isVulnerable = $this->checkIfPasswordIsVulnerable($client, $password, $url);
+            $url = "https://github.com/danielmiessler/SecLists/raw/refs/heads/master/Passwords/Leaked-Databases/alleged-gmail-passwords.txt";
+            $isVulnerable = $this->checkIfPasswordIsVulnerableAsStream($client, $password, $url);
+        }
+        if (!$isVulnerable) {
+            $url = "https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Passwords/Common-Credentials/Language-Specific/French-common-password-list-top-20000.txt";
+            $isVulnerable = $this->checkIfPasswordIsVulnerableAsStream($client, $password, $url);
         }
         return $isVulnerable;
     }
